@@ -85,11 +85,16 @@ const columns: ColumnsType<Intent> = [
     render: (_, record) => (
       <Space size="middle">
         <a>Update</a>
-        <a>Delete</a>
+        <a onClick={() => deleteIntent(record.id)}>Delete</a>
       </Space>
     ),
   },
 ];
+
+const deleteIntent = (id: number) => {
+  console.log(id);
+  axios.delete<any>("intents/" + id);
+};
 
 interface CustomTableProps {
   data: Intent[];
