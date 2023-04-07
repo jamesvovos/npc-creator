@@ -10,8 +10,8 @@ module.exports = () => {
         destination: "http://127.0.0.1:8000/intents/create/",
       },
       {
-        source: "/intents/7",
-        destination: "http://127.0.0.1:8000/intents/7",
+        source: "/intents/:id",
+        destination: "http://127.0.0.1:8000/intents/:id",
       },
     ];
   };
