@@ -91,9 +91,14 @@ const columns: ColumnsType<Intent> = [
   },
 ];
 
+function refreshPage() {
+  window.location.reload();
+}
+
 const deleteIntent = (id: number) => {
   console.log(id);
   axios.delete<any>(`intents/${id}`);
+  refreshPage();
 };
 
 interface CustomTableProps {

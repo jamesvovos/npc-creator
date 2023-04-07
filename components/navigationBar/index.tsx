@@ -7,8 +7,8 @@ import {
 } from "@ant-design/icons";
 import { Layout, Menu } from "antd";
 import React, { useState } from "react";
-import CustomForm from "../createIntentsForm";
-import Intents from "../intentsTable";
+import CreateIntentModal from "../modals/createIntentsForm";
+import IntentsTable from "../tables/intentsTable";
 import DataTable from "../dataTable";
 const { Header, Sider, Content } = Layout;
 
@@ -73,8 +73,8 @@ export default function NavigationBar() {
           }}
         >
           {/* <CustomTable /> */}
-          <Intents />
-          <CustomForm />
+          <CreateIntentModal />
+          <IntentsTable />
           <DataTable />
         </Content>
       </Layout>
