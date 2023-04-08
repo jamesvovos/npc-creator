@@ -26,7 +26,7 @@ const formItemLayoutWithOutLabel = {
   },
 };
 
-export default function CreateIntentForm(): JSX.Element {
+export default function CreateIntentModal(): JSX.Element {
   const [visible, setVisible] = useState(false);
   const [form] = Form.useForm();
   const [confirmLoading, setConfirmLoading] = useState(false);
