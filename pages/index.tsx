@@ -1,6 +1,6 @@
 import Head from "next/head";
 import styles from "@/styles/Home.module.css";
-import NavigationBar from "@/components/navigationBar";
+import NavigationBar from "@/components/NavigationBar";
 import "antd/dist/reset.css";
 
 export default function Home() {

@@ -7,8 +7,8 @@ import {
 } from "@ant-design/icons";
 import { Layout, Menu } from "antd";
 import React, { useState } from "react";
-import CreateIntentModal from "../modals/createIntentsModal";
-import IntentsTable from "../tables/intentsTable";
+import CreateIntentModal from "../Modals/CreateIntentsModal";
+import IntentsTable from "../Tables/IntentsTable";
 import DataTable from "../dataTable";
 const { Header, Sider, Content } = Layout;
 
