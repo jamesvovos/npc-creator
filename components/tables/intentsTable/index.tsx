@@ -12,7 +12,7 @@ import {
   Button,
 } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import type { Intent, CustomTableProps } from "@/interfaces";
+import type { Intent, Pattern, Response, CustomTableProps } from "@/interfaces";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 
 const { Panel } = Collapse;
@@ -35,9 +35,31 @@ export default function Intents(): JSX.Element {
     setVisible(true);
   };
 
-  const handleEdit = (intent: Intent) => {
-    console.log(intent);
-    setVisible(false);
+  const handleEdit = () => {
+    form.validateFields().then((values) => {
+      const updatedIntent = {
+        tag: values.intent.tag,
+        patterns: values.patterns
+          ? values.patterns.map((pattern: Pattern) => ({
+              text: pattern.text,
+            }))
+          : [],
+        responses: values.responses
+          ? values.responses.map((response: Response) => ({
+              text: response.text,
+            }))
+          : [],
+      };
+      axios
+        .put(`intents/${modalData.id}`, updatedIntent)
+        .then(() => {
+          setVisible(false);
+          refreshPage();
+        })
+        .catch((error) => {
+          console.error("Error editing intent: ", error);
+        });
+    });
   };
 
   const handleCancel = () => {
@@ -117,7 +139,7 @@ export default function Intents(): JSX.Element {
             width={1000}
             centered={true}
           >
-            <Form form={form} onFinish={() => handleEdit(intent)}>
+            <Form form={form} onFinish={() => handleEdit()}>
               <Form.Item
                 name={["intent", "tag"]}
                 label="Tag"
