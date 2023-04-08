@@ -21,6 +21,10 @@ module.exports = () => {
         source: "/users/:userId/projects",
         destination: "http://127.0.0.1:8000/users/:userId/projects/",
       },
+      {
+        source: "/projects/:id",
+        destination: "http://127.0.0.1:8000/projects/:id/",
+      },
     ];
   };
   return {

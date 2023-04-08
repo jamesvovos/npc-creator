@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Project, DataType } from "@/interfaces";
-import { Table, Button } from "antd";
+import { Table, Button, message } from "antd";
 
 // columns we want to display in the table
 const columns = [
@@ -24,6 +24,7 @@ const columns = [
 const ProjectsTable: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [selectedRows, setSelectedRows] = useState<DataType[]>([]);
+  const [messageApi, contextHolder] = message.useMessage();
 
   useEffect(() => {
     axios.get<Project[]>("/projects").then((response) => {
@@ -40,8 +41,31 @@ const ProjectsTable: React.FC = () => {
     userId: project.user_id,
   }));
 
-  const handleDelete = () => {
-    console.log("Deleting selected rows: ", selectedRows);
+  const success = (message: string) => {
+    messageApi.open({
+      type: "success",
+      content: `Project(s) ${message} successfully.`,
+    });
+  };
+
+  const failure = (message: string) => {
+    messageApi.open({
+      type: "error",
+      content: `Project(s) ${message} unsuccessfully.`,
+    });
+  };
+
+  const handleDelete = async () => {
+    try {
+      const selectedProjects = [...selectedRows]; // assuming selectedRows is an array of project IDs
+      for (let i = 0; i < selectedProjects.length; i++) {
+        const projectId = selectedProjects[i].id;
+        await axios.delete(`/projects/${projectId}`);
+      }
+      success("deleted");
+    } catch (error) {
+      failure("deleted");
+    }
   };
 
   const handleEdit = () => {
@@ -64,6 +88,7 @@ const ProjectsTable: React.FC = () => {
 
   return (
     <div>
+      {contextHolder}
       <Table
         rowSelection={{
           type: "checkbox",
