@@ -18,3 +18,18 @@ export interface Response {
 export interface CustomTableProps {
   data: Intent[];
 }
+
+export interface Project {
+  id: number;
+  name: string;
+  description: string;
+  user_id: number;
+}
+
+export interface DataType {
+  key: React.Key;
+  id: number;
+  name: string;
+  description: string;
+  userId: number;
+}

@@ -1,12 +1,7 @@
 import axios from "axios";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Modal, message } from "antd";
-
-const layout = {
-  labelCol: { span: 8 },
-  wrapperCol: { span: 16 },
-};
 
 const formItemLayout = {
   labelCol: {
@@ -64,12 +59,7 @@ export default function CreateIntentModal(): JSX.Element {
       setConfirmLoading(false);
     }, 1000);
     success();
-    //refreshPage();
   };
-
-  function refreshPage() {
-    window.location.reload();
-  }
 
   return (
     <div style={{ display: "flex", justifyContent: "flex-end" }}>
