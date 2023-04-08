@@ -1,6 +1,6 @@
 import Head from "next/head";
 import styles from "@/styles/Home.module.css";
-import NavigationBar from "@/components/NavigationBar";
+import Dashboard from "./Dashboard";
 import "antd/dist/reset.css";
 
 export default function Home() {
@@ -13,8 +13,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        {/* <Dashboard /> */}
-        <NavigationBar />
+        <Dashboard />
       </main>
     </>
   );
