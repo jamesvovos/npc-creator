@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Project, DataType } from "@/interfaces";
-import { Table } from "antd";
+import { Table, Button } from "antd";
 
 // columns we want to display in the table
 const columns = [
@@ -21,24 +21,14 @@ const columns = [
   },
 ];
 
-// highlights and grabs the data of item selected in table
-const rowSelection = {
-  onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
-    console.log(
-      `selectedRowKeys: ${selectedRowKeys}`,
-      "selectedRows: ",
-      selectedRows
-    );
-  },
-};
-
 const ProjectsTable: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
+  const [selectedRows, setSelectedRows] = useState<DataType[]>([]);
 
   useEffect(() => {
-    axios
-      .get<Project[]>("/projects")
-      .then((response) => setProjects(response.data));
+    axios.get<Project[]>("/projects").then((response) => {
+      setProjects(response.data);
+    });
   }, []);
 
   // the dataSource prop for the Table component expects an array of DataType objects (so convert projects to DataType for ANTD)
@@ -50,6 +40,28 @@ const ProjectsTable: React.FC = () => {
     userId: project.user_id,
   }));
 
+  const handleDelete = () => {
+    console.log("Deleting selected rows: ", selectedRows);
+  };
+
+  const handleEdit = () => {
+    console.log("Editing selected rows: ", selectedRows);
+  };
+
+  const hasSelectedRows = selectedRows.length > 0;
+
+  // highlights and grabs the data of item selected in table
+  const rowSelection = {
+    onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
+      console.log(
+        `selectedRowKeys: ${selectedRowKeys}`,
+        "selectedRows: ",
+        selectedRows
+      );
+      setSelectedRows(selectedRows);
+    },
+  };
+
   return (
     <div>
       <Table
@@ -60,7 +72,23 @@ const ProjectsTable: React.FC = () => {
         columns={columns}
         dataSource={projectsData}
         rowKey={"id"}
+        pagination={{
+          position: ["bottomLeft"],
+        }}
       />
+      {hasSelectedRows && (
+        <div style={{ position: "absolute", bottom: "40px", right: "20px" }}>
+          <Button onClick={handleEdit}>Edit</Button>
+          <Button
+            type="primary"
+            danger
+            style={{ marginLeft: "10px" }}
+            onClick={handleDelete}
+          >
+            Delete
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
