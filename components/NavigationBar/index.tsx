@@ -7,13 +7,19 @@ import {
 } from "@ant-design/icons";
 import { Layout, Menu } from "antd";
 import React, { useState } from "react";
-import CreateIntentModal from "../Modals/CreateIntentsModal";
-import IntentsTable from "../Tables/IntentsTable";
+import Intents from "@/pages/Intents";
+import CreateProject from "@/pages/CreateProject";
 import DataTable from "../dataTable";
 const { Header, Sider, Content } = Layout;
 
 export default function NavigationBar() {
   const [collapsed, setCollapsed] = useState(false);
+  const [selectedContent, setSelectedContent] = useState("Dashboard");
+
+  const handleMenuItemClick = (content: any) => {
+    setSelectedContent(content);
+  };
+
   return (
     <Layout className="layout">
       <Sider trigger={null} collapsible collapsed={collapsed}>
@@ -22,19 +28,20 @@ export default function NavigationBar() {
           theme="dark"
           mode="inline"
           defaultSelectedKeys={["1"]}
+          onClick={(e) => handleMenuItemClick(e.key)}
           items={[
             {
-              key: "1",
+              key: "Dashboard",
               icon: <UserOutlined />,
               label: "Dashboard",
             },
             {
-              key: "2",
+              key: "CreateProject",
               icon: <VideoCameraOutlined />,
               label: "Create Project",
             },
             {
-              key: "3",
+              key: "ManageNPCs",
               icon: <UploadOutlined />,
               label: "Manage NPCs",
             },
@@ -56,26 +63,20 @@ export default function NavigationBar() {
             }
           )}
         </Header>
-        {/* <Content
-          className="site-layout-background"
-          style={{
-            margin: "24px 16px",
-            padding: 24,
-          }}
-        >
-          Content
-        </Content> */}
         <Content
           className="site-layout-background"
           style={{
             margin: "24px 16px",
             padding: 24,
+            backgroundColor: "#f7f7f7",
           }}
         >
-          {/* <CustomTable /> */}
-          <CreateIntentModal />
-          <IntentsTable />
-          <DataTable />
+          <div>
+            {selectedContent === "Dashboard" && <Intents />}
+            {selectedContent === "Dashboard" && <DataTable />}
+            {selectedContent === "CreateProject" && <CreateProject />}
+            {selectedContent === "ManageNPCs" && <p>Manage NPCs content</p>}
+          </div>
         </Content>
       </Layout>
     </Layout>

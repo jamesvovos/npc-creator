@@ -14,6 +14,7 @@ import {
 import type { ColumnsType } from "antd/es/table";
 import type { Intent, Pattern, Response, CustomTableProps } from "@/interfaces";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import CreateIntentModal from "@/components/Modals/CreateIntentsModal";
 
 const { Panel } = Collapse;
 
@@ -219,8 +220,11 @@ export default function Intents(): JSX.Element {
   );
 
   return (
-    <Card title="Intents" style={{ margin: 20 }}>
-      <CustomTable data={intents} />
-    </Card>
+    <>
+      <CreateIntentModal />
+      <Card title="Intents" style={{ margin: 20 }}>
+        <CustomTable data={intents} />
+      </Card>
+    </>
   );
 }
