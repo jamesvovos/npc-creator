@@ -25,6 +25,14 @@ module.exports = () => {
         source: "/projects/:id",
         destination: "http://127.0.0.1:8000/projects/:id/",
       },
+      {
+        source: "/npcs",
+        destination: "http://127.0.0.1:8000/npcs/",
+      },
+      {
+        source: "/npcs/:id",
+        destination: "http://127.0.0.1:8000/npcs/:id/",
+      },
     ];
   };
   return {

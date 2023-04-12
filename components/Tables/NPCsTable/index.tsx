@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Project, DataTypeProject } from "@/interfaces";
+import { NPC, DataTypeNPC } from "@/interfaces";
 import { Table, Button, message, Modal, Space, Form, Input } from "antd";
 
-const ProjectsTable: React.FC = () => {
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [selectedRows, setSelectedRows] = useState<DataTypeProject[]>([]);
-  const [modalData, setModalData] = useState<Project>({
+const NPCsTable: React.FC = () => {
+  const [npcs, setnpcs] = useState<NPC[]>([]);
+  const [selectedRows, setSelectedRows] = useState<DataTypeNPC[]>([]);
+  const [modalData, setModalData] = useState<NPC>({
     id: 0,
     name: "",
-    description: "",
-    user_id: 0,
+    voice: "",
+    style: "",
   });
   const [visible, setVisible] = useState(false);
   const [form] = Form.useForm();
@@ -19,7 +19,7 @@ const ProjectsTable: React.FC = () => {
   // columns we want to display in the table
   const columns = [
     {
-      title: "Project ID",
+      title: "NPC ID",
       dataIndex: "id",
       key: "id",
       render: (text: string) => <a>{text}</a>,
@@ -29,17 +29,21 @@ const ProjectsTable: React.FC = () => {
       dataIndex: "name",
     },
     {
-      title: "Description",
-      dataIndex: "description",
+      title: "Voice",
+      dataIndex: "voice",
+    },
+    {
+      title: "Style",
+      dataIndex: "style",
     },
     {
       title: "Action",
       key: "action",
-      render: (project: Project) => (
+      render: (NPC: NPC) => (
         <Space size="middle">
-          <a onClick={() => showModal(project)}>Edit</a>
+          <a onClick={() => showModal(NPC)}>Edit</a>
           <Modal
-            title="Edit Project"
+            title="Edit NPC"
             open={visible}
             onOk={form.submit}
             onCancel={handleCancel}
@@ -48,26 +52,28 @@ const ProjectsTable: React.FC = () => {
           >
             <Form form={form} onFinish={() => handleEdit()}>
               <Form.Item
-                name={["project", "name"]}
+                name={["NPC", "name"]}
                 label="Name"
                 initialValue={modalData.name}
                 rules={[{ required: true }]}
               >
-                <Input
-                  placeholder="project name"
-                  defaultValue={modalData.name}
-                />
+                <Input placeholder="NPC name" defaultValue={modalData.name} />
               </Form.Item>
               <Form.Item
-                name={["project", "description"]}
-                label="Description"
-                initialValue={modalData.description}
+                name={["NPC", "voice"]}
+                label="Voice"
+                initialValue={modalData.voice}
                 rules={[{ required: true }]}
               >
-                <Input
-                  placeholder="project description"
-                  defaultValue={modalData.description}
-                />
+                <Input placeholder="NPC voice" defaultValue={modalData.voice} />
+              </Form.Item>
+              <Form.Item
+                name={["NPC", "style"]}
+                label="Style"
+                initialValue={modalData.style}
+                rules={[{ required: true }]}
+              >
+                <Input placeholder="NPC style" defaultValue={modalData.style} />
               </Form.Item>
             </Form>
           </Modal>
@@ -77,8 +83,8 @@ const ProjectsTable: React.FC = () => {
   ];
 
   useEffect(() => {
-    axios.get<Project[]>("/projects").then((response) => {
-      setProjects(response.data);
+    axios.get<NPC[]>("/npcs").then((response) => {
+      setnpcs(response.data);
     });
   }, []);
 
@@ -88,17 +94,17 @@ const ProjectsTable: React.FC = () => {
     setModalData(data);
   }, [modalData]);
 
-  // the dataSource prop for the Table component expects an array of DataType objects (so convert projects to DataType for ANTD)
-  const projectsData: DataTypeProject[] = projects.map((project) => ({
-    key: project.id,
-    id: project.id,
-    name: project.name,
-    description: project.description,
-    userId: project.user_id,
+  // the dataSource prop for the Table component expects an array of DataType objects (so convert npcs to DataType for ANTD)
+  const npcsData: DataTypeNPC[] = npcs.map((NPC) => ({
+    key: NPC.id,
+    id: NPC.id,
+    name: NPC.name,
+    voice: NPC.voice,
+    style: NPC.style,
   }));
 
-  const showModal = (project: Project) => {
-    setModalData(project);
+  const showModal = (NPC: NPC) => {
+    setModalData(NPC);
     setVisible(true);
   };
 
@@ -109,23 +115,23 @@ const ProjectsTable: React.FC = () => {
   const success = (message: string) => {
     messageApi.open({
       type: "success",
-      content: `Project(s) ${message} successfully.`,
+      content: `NPC(s) ${message} successfully.`,
     });
   };
 
   const failure = (message: string) => {
     messageApi.open({
       type: "error",
-      content: `Project(s) ${message} unsuccessfully.`,
+      content: `NPC(s) ${message} unsuccessfully.`,
     });
   };
 
   const handleDelete = async () => {
     try {
-      const selectedProjects = [...selectedRows]; // assuming selectedRows is an array of project IDs
-      for (let i = 0; i < selectedProjects.length; i++) {
-        const projectId = selectedProjects[i].id;
-        await axios.delete(`/projects/${projectId}`);
+      const selectednpcs = [...selectedRows]; // assuming selectedRows is an array of NPC IDs
+      for (let i = 0; i < selectednpcs.length; i++) {
+        const NPCId = selectednpcs[i].id;
+        await axios.delete(`/npcs/${NPCId}`);
       }
       success("deleted");
     } catch (error) {
@@ -135,12 +141,13 @@ const ProjectsTable: React.FC = () => {
 
   const handleEdit = () => {
     form.validateFields().then((values) => {
-      const updatedProject = {
-        name: values.project.name,
-        description: values.project.description,
+      const updatedNPC = {
+        name: values.NPC.name,
+        voice: values.NPC.voice,
+        style: values.NPC.style,
       };
       axios
-        .put(`projects/${modalData.id}`, updatedProject)
+        .put(`npcs/${modalData.id}`, updatedNPC)
         .then(() => {
           setVisible(false);
           success("updated");
@@ -155,10 +162,7 @@ const ProjectsTable: React.FC = () => {
 
   // highlights and grabs the data of item selected in table
   const rowSelection = {
-    onChange: (
-      selectedRowKeys: React.Key[],
-      selectedRows: DataTypeProject[]
-    ) => {
+    onChange: (selectedRowKeys: React.Key[], selectedRows: DataTypeNPC[]) => {
       setSelectedRows(selectedRows);
     },
   };
@@ -172,7 +176,7 @@ const ProjectsTable: React.FC = () => {
           ...rowSelection,
         }}
         columns={columns}
-        dataSource={projectsData}
+        dataSource={npcsData}
         rowKey={"id"}
         pagination={{
           position: ["bottomLeft"],
@@ -194,4 +198,4 @@ const ProjectsTable: React.FC = () => {
   );
 };
 
-export default ProjectsTable;
+export default NPCsTable;

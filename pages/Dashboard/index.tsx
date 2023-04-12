@@ -9,6 +9,7 @@ import { Layout, Menu } from "antd";
 import React, { useState } from "react";
 import Intents from "@/pages/Intents";
 import CreateProject from "@/pages/CreateProject";
+import NPCs from "@/pages/NPCs";
 import DataTable from "@/components/Tables";
 const { Header, Sider, Content } = Layout;
 
@@ -75,7 +76,7 @@ export default function Dashboard() {
             {selectedContent === "Dashboard" && <Intents />}
             {selectedContent === "Dashboard" && <DataTable />}
             {selectedContent === "CreateProject" && <CreateProject />}
-            {selectedContent === "ManageNPCs" && <p>Manage NPCs content</p>}
+            {selectedContent === "ManageNPCs" && <NPCs />}
           </div>
         </Content>
       </Layout>

@@ -26,10 +26,25 @@ export interface Project {
   user_id: number;
 }
 
-export interface DataType {
+export interface NPC {
+  id: number;
+  name: string;
+  voice: string;
+  style: string;
+}
+
+export interface DataTypeProject {
   key: React.Key;
   id: number;
   name: string;
   description: string;
   userId: number;
+}
+
+export interface DataTypeNPC {
+  key: React.Key;
+  id: number;
+  name: string;
+  voice: string;
+  style: string;
 }
