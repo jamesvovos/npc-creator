@@ -50,6 +50,7 @@ const ProjectsTable: React.FC = () => {
               <Form.Item
                 name={["project", "name"]}
                 label="Name"
+                initialValue={modalData.name}
                 rules={[{ required: true }]}
               >
                 <Input
@@ -60,6 +61,7 @@ const ProjectsTable: React.FC = () => {
               <Form.Item
                 name={["project", "description"]}
                 label="Description"
+                initialValue={modalData.description}
                 rules={[{ required: true }]}
               >
                 <Input
