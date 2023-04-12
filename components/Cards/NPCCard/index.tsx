@@ -5,7 +5,16 @@ import {
   SettingOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
-import { Avatar, Card, Modal, message, Form, Input, Select } from "antd";
+import {
+  Avatar,
+  Card,
+  Modal,
+  message,
+  Form,
+  Input,
+  Select,
+  Popconfirm,
+} from "antd";
 import { NPCCardProps } from "@/interfaces";
 import { NPC } from "@/interfaces";
 import axios from "axios";
@@ -22,6 +31,7 @@ const NPCCard: React.FC<NPCCardProps> = ({ npc }) => {
     style: "",
   });
   const [visible, setVisible] = useState(false);
+  const [displayPopup, setDisplayPopup] = useState(false);
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
   const { Option } = Select;
@@ -35,17 +45,18 @@ const NPCCard: React.FC<NPCCardProps> = ({ npc }) => {
     setVisible(false);
   };
 
+  const handleCancelDelete = () => {
+    setDisplayPopup(false);
+  };
+
+  const openConfirmPopup = () => {
+    setDisplayPopup(true);
+  };
+
   const success = (message: string) => {
     messageApi.open({
       type: "success",
       content: `NPC(s) ${message} successfully.`,
-    });
-  };
-
-  const failure = (message: string) => {
-    messageApi.open({
-      type: "error",
-      content: `NPC ${message} unsuccessfully.`,
     });
   };
 
@@ -94,7 +105,7 @@ const NPCCard: React.FC<NPCCardProps> = ({ npc }) => {
         actions={[
           <SettingOutlined key="setting" />,
           <EditOutlined key="edit" onClick={() => showModal(npc)} />,
-          <DeleteOutlined key="delete" onClick={() => handleDelete(npc.id)} />,
+          <DeleteOutlined key="delete" onClick={openConfirmPopup} />,
         ]}
       >
         <Meta
@@ -172,6 +183,16 @@ const NPCCard: React.FC<NPCCardProps> = ({ npc }) => {
           </Form.Item>
         </Form>
       </Modal>
+      <Popconfirm
+        title={`Do you want to delete ${npc.name}?`}
+        description="Are you sure to delete this NPC?"
+        okText="Yes"
+        cancelText="No"
+        placement="bottomLeft"
+        open={displayPopup}
+        onCancel={handleCancelDelete}
+        onConfirm={() => handleDelete(npc.id)}
+      ></Popconfirm>
     </div>
   );
 };
