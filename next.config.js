@@ -30,6 +30,10 @@ module.exports = () => {
         destination: "http://127.0.0.1:8000/npcs/",
       },
       {
+        source: "/projects/:projectId/npc",
+        destination: "http://127.0.0.1:8000/projects/:projectId/npc/",
+      },
+      {
         source: "/npcs/:id",
         destination: "http://127.0.0.1:8000/npcs/:id/",
       },
