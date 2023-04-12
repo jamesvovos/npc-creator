@@ -13,7 +13,6 @@ import {
 } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import type { Intent, Pattern, Response, CustomTableProps } from "@/interfaces";
-import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 
 const { Panel } = Collapse;
 
@@ -30,8 +29,6 @@ export default function IntentsTable(): JSX.Element {
   const [messageApi, contextHolder] = message.useMessage();
 
   const showModal = (intent: Intent) => {
-    console.log(intent);
-    form.resetFields();
     setModalData(intent);
     setVisible(true);
   };
@@ -72,7 +69,6 @@ export default function IntentsTable(): JSX.Element {
 
   const handleCancel = () => {
     setVisible(false);
-    form.resetFields();
   };
 
   const deleteIntent = (id: number) => {
@@ -85,6 +81,12 @@ export default function IntentsTable(): JSX.Element {
       .get<Intent[]>("/intents")
       .then((response) => setIntents(response.data));
   }, []);
+
+  useEffect(() => {
+    const data = modalData;
+    form.resetFields();
+    setModalData(data);
+  }, [modalData]);
 
   const columns: ColumnsType<Intent> = [
     {
@@ -147,6 +149,7 @@ export default function IntentsTable(): JSX.Element {
               <Form.Item
                 name={["intent", "tag"]}
                 label="Tag"
+                initialValue={modalData.tag}
                 rules={[{ required: true }]}
               >
                 <Input placeholder="tag" defaultValue={modalData.tag} />
@@ -164,21 +167,6 @@ export default function IntentsTable(): JSX.Element {
                       <Input placeholder="pattern" />
                     </Form.Item>
                   ))}
-                  {/* <Form.Item>
-                    <Button
-                      type="dashed"
-                      onClick={() =>
-                        form.setFieldsValue({
-                          patterns: [...intent.patterns, { text: "" }],
-                        })
-                      }
-                      style={{ width: "60%" }}
-                      icon={<PlusOutlined />}
-                      htmlType="submit"
-                    >
-                      Add pattern
-                    </Button>
-                  </Form.Item> */}
                 </Panel>
                 <Panel header="Responses" key="2">
                   {modalData.responses.map((response, index) => (
@@ -192,21 +180,6 @@ export default function IntentsTable(): JSX.Element {
                       <Input placeholder="response" />
                     </Form.Item>
                   ))}
-                  {/* <Form.Item>
-                    <Button
-                      type="dashed"
-                      onClick={() =>
-                        form.setFieldsValue({
-                          responses: [...intent.responses, { text: "" }],
-                        })
-                      }
-                      style={{ width: "60%" }}
-                      icon={<PlusOutlined />}
-                      htmlType="submit"
-                    >
-                      Add response
-                    </Button>
-                  </Form.Item> */}
                 </Panel>
               </Collapse>
             </Form>
