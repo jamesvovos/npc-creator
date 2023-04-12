@@ -83,7 +83,6 @@ export default function CreateNPCModal(): JSX.Element {
           <Form.Item
             name="voice"
             label="Voice"
-            hasFeedback
             rules={[{ required: true, message: "select a voice for your NPC" }]}
           >
             <Select placeholder="select a voice">
@@ -95,7 +94,6 @@ export default function CreateNPCModal(): JSX.Element {
           <Form.Item
             name="style"
             label="Style"
-            hasFeedback
             rules={[{ required: true, message: "select a style for your NPC" }]}
           >
             <Select placeholder="select a style">
