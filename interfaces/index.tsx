@@ -29,6 +29,8 @@ export interface Project {
 export interface NPC {
   id: number;
   name: string;
+  avatar: string;
+  bio: string;
   voice: string;
   style: string;
 }
@@ -45,6 +47,12 @@ export interface DataTypeNPC {
   key: React.Key;
   id: number;
   name: string;
+  avatar: string;
+  bio: string;
   voice: string;
   style: string;
+}
+
+export interface NPCCardProps {
+  npc: NPC;
 }

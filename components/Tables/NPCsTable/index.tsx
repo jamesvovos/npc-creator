@@ -9,6 +9,8 @@ const NPCsTable: React.FC = () => {
   const [modalData, setModalData] = useState<NPC>({
     id: 0,
     name: "",
+    avatar: "",
+    bio: "",
     voice: "",
     style: "",
   });
@@ -99,6 +101,8 @@ const NPCsTable: React.FC = () => {
     key: NPC.id,
     id: NPC.id,
     name: NPC.name,
+    avatar: NPC.avatar,
+    bio: NPC.bio,
     voice: NPC.voice,
     style: NPC.style,
   }));
