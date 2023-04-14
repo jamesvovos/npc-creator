@@ -16,7 +16,7 @@ import {
   Popconfirm,
 } from "antd";
 import { NPCCardProps } from "@/interfaces";
-import { NPC } from "@/interfaces";
+import { NPC, Intent } from "@/interfaces";
 import axios from "axios";
 
 const { Meta } = Card;
@@ -29,8 +29,10 @@ const NPCCard: React.FC<NPCCardProps> = ({ npc }) => {
     bio: "",
     voice: "",
     style: "",
+    intents: [],
   });
   const [visible, setVisible] = useState(false);
+  const [intents, setIntents] = useState<Intent[]>([]);
   const [displayPopup, setDisplayPopup] = useState(false);
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
@@ -68,15 +70,37 @@ const NPCCard: React.FC<NPCCardProps> = ({ npc }) => {
         bio: values.bio,
         voice: values.voice,
         style: values.style,
+        intents: [],
       };
+
+      // Remove null values from tags
+      const tags = values.intents.filter((tag: string) => tag !== null);
+
+      // Fetch matching intents
       axios
-        .put(`npcs/${modalData.id}`, updatedNPC)
-        .then(() => {
-          setVisible(false);
-          success("deleted");
+        .get("intents", {
+          params: {
+            tags: tags.join(","),
+          },
+        })
+        .then((response) => {
+          updatedNPC.intents = response.data.filter((intent: Intent) =>
+            tags.includes(intent.tag)
+          );
+
+          // Send PUT request with updated NPC object
+          axios
+            .put(`npcs/${modalData.id}`, updatedNPC)
+            .then(() => {
+              setVisible(false);
+              success("deleted");
+            })
+            .catch((error) => {
+              console.error("Error editing NPC: ", error);
+            });
         })
         .catch((error) => {
-          console.error("Error editing NPC: ", error);
+          console.error("Error fetching intents: ", error);
         });
     });
   };
@@ -85,6 +109,12 @@ const NPCCard: React.FC<NPCCardProps> = ({ npc }) => {
     axios.delete(`/npcs/${id}`);
     success("deleted");
   };
+
+  useEffect(() => {
+    axios
+      .get<Intent[]>("/intents")
+      .then((response) => setIntents(response.data));
+  }, []);
 
   useEffect(() => {
     const data = modalData;
@@ -179,6 +209,24 @@ const NPCCard: React.FC<NPCCardProps> = ({ npc }) => {
             <Select placeholder="select a style" defaultValue={modalData.style}>
               <Option value="Happy">Happy</Option>
               <Option value="Angry">Angry</Option>
+            </Select>
+          </Form.Item>
+          <Form.Item
+            name="intents"
+            label="Intents"
+            initialValue={modalData.intents?.map((intent) => intent.tag) || []}
+          >
+            <Select
+              mode="tags"
+              style={{ width: "100%" }}
+              placeholder="Select intents by tag"
+              onChange={(value) => form.setFieldsValue({ intents: value })}
+            >
+              {intents.map((intent) => (
+                <Option key={intent.id} value={intent.tag}>
+                  {intent.tag}
+                </Option>
+              ))}
             </Select>
           </Form.Item>
         </Form>

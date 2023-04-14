@@ -33,6 +33,7 @@ export interface NPC {
   bio: string;
   voice: string;
   style: string;
+  intents: Intent[];
 }
 
 export interface DataTypeProject {
