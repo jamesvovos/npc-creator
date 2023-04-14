@@ -1,7 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { Button, Drawer, Space, Descriptions, Avatar } from "antd";
+import {
+  Button,
+  Drawer,
+  Space,
+  Descriptions,
+  Avatar,
+  Modal,
+  Input,
+  Select,
+  Form,
+  message,
+} from "antd";
 import type { DrawerProps } from "antd/es/drawer";
-import { NPCDetailsDrawerProps } from "@/interfaces";
+import { EditOutlined } from "@ant-design/icons";
+import { NPCDetailsDrawerProps, Intent, NPC } from "@/interfaces";
+import axios from "axios";
 
 const NpcDetailsDrawer: React.FC<NPCDetailsDrawerProps> = ({
   open,
@@ -9,13 +22,100 @@ const NpcDetailsDrawer: React.FC<NPCDetailsDrawerProps> = ({
   npc,
 }) => {
   const [size, setSize] = useState<DrawerProps["size"]>();
+  const [visible, setVisible] = useState(false);
+  const [intents, setIntents] = useState<Intent[]>([]);
+  const [form] = Form.useForm();
+  const [messageApi, contextHolder] = message.useMessage();
+  const { Option } = Select;
+
+  const [modalData, setModalData] = useState<NPC>({
+    id: 0,
+    name: "",
+    avatar: "",
+    bio: "",
+    voice: "",
+    style: "",
+    intents: [],
+  });
 
   useEffect(() => {
     setSize(open ? "large" : undefined);
   }, [open]);
 
+  useEffect(() => {
+    axios
+      .get<Intent[]>("/intents")
+      .then((response) => setIntents(response.data));
+  }, []);
+
+  useEffect(() => {
+    const data = modalData;
+    form.resetFields();
+    setModalData(data);
+  }, [modalData]);
+
+  const success = () => {
+    messageApi.open({
+      type: "success",
+      content: `NPC updated successfully!`,
+    });
+  };
+
+  const showModal = (NPC: NPC) => {
+    setModalData(NPC);
+    setVisible(true);
+  };
+
+  const handleCancel = () => {
+    setVisible(false);
+  };
+
+  const handleEdit = () => {
+    form.validateFields().then((values) => {
+      const updatedNPC = {
+        name: values.name,
+        avatar: values.avatar,
+        bio: values.bio,
+        voice: values.voice,
+        style: values.style,
+        intents: [],
+      };
+
+      // Remove null values from tags
+      const tags = values.intents.filter((tag: string) => tag !== null);
+
+      // Fetch matching intents
+      axios
+        .get("intents", {
+          params: {
+            tags: tags.join(","),
+          },
+        })
+        .then((response) => {
+          updatedNPC.intents = response.data.filter((intent: Intent) =>
+            tags.includes(intent.tag)
+          );
+
+          // Send PUT request with updated NPC object
+          axios
+            .put(`npcs/${modalData.id}`, updatedNPC)
+            .then(() => {
+              setVisible(false);
+              success();
+            })
+            .catch((error) => {
+              console.error("Error editing NPC: ", error);
+            });
+        })
+        .catch((error) => {
+          console.error("Error fetching intents: ", error);
+        });
+    });
+  };
+
   return (
     <>
+      {contextHolder}
       <Drawer
         title={`${npc.name} Details:`}
         placement="right"
@@ -24,8 +124,8 @@ const NpcDetailsDrawer: React.FC<NPCDetailsDrawerProps> = ({
         open={open}
         extra={
           <Space>
-            <Button type="primary" onClick={onClose}>
-              Close
+            <Button type="primary" onClick={() => showModal(npc)}>
+              Edit NPC <EditOutlined key="edit" />
             </Button>
           </Space>
         }
@@ -53,6 +153,88 @@ const NpcDetailsDrawer: React.FC<NPCDetailsDrawerProps> = ({
           </Descriptions.Item>
         </Descriptions>
       </Drawer>
+      <Modal
+        title={`Editing ${npc.name} NPC`}
+        open={visible}
+        onOk={form.submit}
+        onCancel={handleCancel}
+        width={1000}
+        centered={true}
+      >
+        <Form form={form} onFinish={() => handleEdit()}>
+          <Form.Item
+            name="name"
+            label="Name"
+            initialValue={modalData.name}
+            rules={[{ required: true }]}
+          >
+            <Input placeholder="NPC name" defaultValue={modalData.name} />
+          </Form.Item>
+          <Form.Item
+            name="avatar"
+            label="Avatar"
+            initialValue={modalData.avatar}
+            rules={[{ required: false }]}
+          >
+            <Input
+              placeholder="NPC avatar image address"
+              defaultValue={modalData.avatar}
+            />
+          </Form.Item>
+          <Form.Item
+            name="bio"
+            label="Bio"
+            initialValue={modalData.bio}
+            rules={[{ required: true }]}
+          >
+            <Input
+              placeholder="NPC bio/description"
+              defaultValue={modalData.bio}
+            />
+          </Form.Item>
+          <Form.Item
+            name="voice"
+            label="Voice"
+            initialValue={modalData.voice}
+            rules={[{ required: true, message: "select a voice for your NPC" }]}
+          >
+            <Select placeholder="select a voice" defaultValue={modalData.voice}>
+              <Option value="IBM Watson">IBM Watson</Option>
+              <Option value="MS Azure">MS Azure</Option>
+            </Select>
+          </Form.Item>
+
+          <Form.Item
+            name="style"
+            label="Style"
+            initialValue={modalData.style}
+            rules={[{ required: true, message: "select a style for your NPC" }]}
+          >
+            <Select placeholder="select a style" defaultValue={modalData.style}>
+              <Option value="Happy">Happy</Option>
+              <Option value="Angry">Angry</Option>
+            </Select>
+          </Form.Item>
+          <Form.Item
+            name="intents"
+            label="Intents"
+            initialValue={modalData.intents?.map((intent) => intent.tag) || []}
+          >
+            <Select
+              mode="tags"
+              style={{ width: "100%" }}
+              placeholder="Select intents by tag"
+              onChange={(value) => form.setFieldsValue({ intents: value })}
+            >
+              {intents.map((intent) => (
+                <Option key={intent.id} value={intent.tag}>
+                  {intent.tag}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+        </Form>
+      </Modal>
     </>
   );
 };
