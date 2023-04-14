@@ -10,7 +10,6 @@ import React, { useState } from "react";
 import Intents from "@/pages/Intents";
 import CreateProject from "@/pages/CreateProject";
 import NPCs from "@/pages/NPCs";
-import DataTable from "@/components/Tables";
 const { Header, Sider, Content } = Layout;
 
 export default function Dashboard() {
@@ -74,7 +73,6 @@ export default function Dashboard() {
         >
           <div>
             {selectedContent === "Dashboard" && <Intents />}
-            {selectedContent === "Dashboard" && <DataTable />}
             {selectedContent === "CreateProject" && <CreateProject />}
             {selectedContent === "ManageNPCs" && <NPCs />}
           </div>
