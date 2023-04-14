@@ -23,6 +23,7 @@ export interface Project {
   id: number;
   name: string;
   description: string;
+  npcs: NPC[];
   user_id: number;
 }
 
@@ -41,6 +42,7 @@ export interface DataTypeProject {
   id: number;
   name: string;
   description: string;
+  npcs: NPC[];
   userId: number;
 }
 
@@ -62,4 +64,10 @@ export interface NPCDetailsDrawerProps {
   open: boolean;
   onClose: any;
   npc: NPC;
+}
+
+export interface ProjectNPCDetailsDrawerProps {
+  open: boolean;
+  onClose: any;
+  project: Project;
 }

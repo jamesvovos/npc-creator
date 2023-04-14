@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Project, DataTypeProject } from "@/interfaces";
 import { Table, Button, message, Modal, Space, Form, Input } from "antd";
+import ProjectNpcDetailsDrawer from "@/components/Drawers/ProjectNpcDetailsDrawer";
 
 const ProjectsTable: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -10,11 +11,13 @@ const ProjectsTable: React.FC = () => {
     id: 0,
     name: "",
     description: "",
+    npcs: [],
     user_id: 0,
   });
   const [visible, setVisible] = useState(false);
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   // columns we want to display in the table
   const columns = [
@@ -38,6 +41,7 @@ const ProjectsTable: React.FC = () => {
       render: (project: Project) => (
         <Space size="middle">
           <a onClick={() => showModal(project)}>Edit</a>
+          <a onClick={openDetailsDrawer}>View NPCs</a>
           <Modal
             title="Edit Project"
             open={visible}
@@ -71,6 +75,11 @@ const ProjectsTable: React.FC = () => {
               </Form.Item>
             </Form>
           </Modal>
+          <ProjectNpcDetailsDrawer
+            open={drawerOpen}
+            onClose={handleCloseDrawer}
+            project={project}
+          />
         </Space>
       ),
     },
@@ -94,6 +103,7 @@ const ProjectsTable: React.FC = () => {
     id: project.id,
     name: project.name,
     description: project.description,
+    npcs: project.npcs,
     userId: project.user_id,
   }));
 
@@ -149,6 +159,14 @@ const ProjectsTable: React.FC = () => {
           console.error("Error editing intent: ", error);
         });
     });
+  };
+
+  const openDetailsDrawer = () => {
+    setDrawerOpen(!drawerOpen);
+  };
+
+  const handleCloseDrawer = () => {
+    setDrawerOpen(false);
   };
 
   const hasSelectedRows = selectedRows.length > 0;
