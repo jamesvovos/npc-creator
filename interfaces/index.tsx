@@ -57,3 +57,9 @@ export interface DataTypeNPC {
 export interface NPCCardProps {
   npc: NPC;
 }
+
+export interface NPCDetailsDrawerProps {
+  open: boolean;
+  onClose: any;
+  npc: NPC;
+}

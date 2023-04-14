@@ -15,6 +15,7 @@ import {
   Select,
   Popconfirm,
 } from "antd";
+import NpcDetailsDrawer from "@/components/Drawers/NpcDetailsDrawer";
 import { NPCCardProps } from "@/interfaces";
 import { NPC, Intent } from "@/interfaces";
 import axios from "axios";
@@ -34,6 +35,7 @@ const NPCCard: React.FC<NPCCardProps> = ({ npc }) => {
   const [visible, setVisible] = useState(false);
   const [intents, setIntents] = useState<Intent[]>([]);
   const [displayPopup, setDisplayPopup] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
   const { Option } = Select;
@@ -53,6 +55,14 @@ const NPCCard: React.FC<NPCCardProps> = ({ npc }) => {
 
   const openConfirmPopup = () => {
     setDisplayPopup(true);
+  };
+
+  const openDetailsDrawer = () => {
+    setDrawerOpen(!drawerOpen);
+  };
+
+  const handleCloseDrawer = () => {
+    setDrawerOpen(false);
   };
 
   const success = (message: string) => {
@@ -121,10 +131,12 @@ const NPCCard: React.FC<NPCCardProps> = ({ npc }) => {
     form.resetFields();
     setModalData(data);
   }, [modalData]);
+
   return (
     <div>
       {contextHolder}
       <Card
+        hoverable={true}
         style={{ width: 300, marginRight: 30, marginBottom: 30 }}
         cover={
           <img
@@ -133,7 +145,7 @@ const NPCCard: React.FC<NPCCardProps> = ({ npc }) => {
           />
         }
         actions={[
-          <SettingOutlined key="setting" />,
+          <SettingOutlined key="setting" onClick={openDetailsDrawer} />,
           <EditOutlined key="edit" onClick={() => showModal(npc)} />,
           <DeleteOutlined key="delete" onClick={openConfirmPopup} />,
         ]}
@@ -149,6 +161,11 @@ const NPCCard: React.FC<NPCCardProps> = ({ npc }) => {
           <p>{npc.voice}</p>
         </div>
       </Card>
+      <NpcDetailsDrawer
+        open={drawerOpen}
+        onClose={handleCloseDrawer}
+        npc={npc}
+      />
       <Modal
         title={`Editing ${npc.name} NPC`}
         open={visible}
