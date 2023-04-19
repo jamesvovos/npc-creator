@@ -15,6 +15,7 @@ import type { DrawerProps } from "antd/es/drawer";
 import { EditOutlined } from "@ant-design/icons";
 import { NPCDetailsDrawerProps, Intent, NPC } from "@/interfaces";
 import axios from "axios";
+import CreateAvatarModal from "@/components/Modals/CreateAvatarModal";
 
 const NpcDetailsDrawer: React.FC<NPCDetailsDrawerProps> = ({
   open,
@@ -27,6 +28,8 @@ const NpcDetailsDrawer: React.FC<NPCDetailsDrawerProps> = ({
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
   const { Option } = Select;
+  const [hover, setHover] = useState(false);
+  const [isAvatarCreatorVisible, setIsAvatarCreatorVisible] = useState(false);
 
   const [modalData, setModalData] = useState<NPC>({
     id: 0,
@@ -37,6 +40,18 @@ const NpcDetailsDrawer: React.FC<NPCDetailsDrawerProps> = ({
     style: "",
     intents: [],
   });
+
+  const handleMouseEnter = () => {
+    setHover(true);
+  };
+
+  const handleMouseLeave = () => {
+    setHover(false);
+  };
+
+  const handleEditAvatar = () => {
+    setIsAvatarCreatorVisible(!isAvatarCreatorVisible);
+  };
 
   useEffect(() => {
     setSize(open ? "large" : undefined);
@@ -130,13 +145,47 @@ const NpcDetailsDrawer: React.FC<NPCDetailsDrawerProps> = ({
           </Space>
         }
       >
-        <div style={{ display: "flex", justifyContent: "center" }}>
+        <div
+          className="avatar-wrapper"
+          style={{
+            display: "flex",
+            justifyContent: "center",
+          }}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
           <Avatar
-            src={npc.avatar}
+            src={npc?.avatar}
             size={200}
-            style={{ marginBottom: 30, borderColor: "#0099FF", borderWidth: 3 }}
+            style={{
+              marginBottom: 30,
+              borderColor: "#0099FF",
+              borderWidth: 3,
+            }}
           />
+          {hover && (
+            <div
+              className="avatar-overlay"
+              style={{
+                position: "absolute",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+                borderRadius: "50%",
+              }}
+            >
+              <div onClick={handleEditAvatar}>
+                <EditOutlined
+                  style={{ marginRight: 8, color: "#fff", fontSize: 16 }}
+                />
+                <span style={{ color: "#fff", fontWeight: 600 }}>Edit</span>
+              </div>
+            </div>
+          )}
         </div>
+        {isAvatarCreatorVisible && <CreateAvatarModal npc={npc} />}
+
         <Descriptions bordered column={{ lg: 1 }}>
           <Descriptions.Item label="NPC Name:">{npc?.name}</Descriptions.Item>
           <Descriptions.Item label="Avatar:">{npc?.avatar}</Descriptions.Item>

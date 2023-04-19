@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button, Drawer, Space, Descriptions } from "antd";
 import type { DrawerProps } from "antd/es/drawer";
 import { ProjectNPCDetailsDrawerProps } from "@/interfaces";
-import NPCCard from "@/components/Cards/NPCCard";
+import NPCCard from "@/components/Cards/NpcCard";
 
 const ProjectNpcDetailsDrawer: React.FC<ProjectNPCDetailsDrawerProps> = ({
   open,

@@ -23,3 +23,47 @@
 .layout {
   height: 100vh;
 }
+
+.iFrame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  overflow: hidden;
+}
+
+.avatar-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.avatar-overlay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.avatar-wrapper:hover .avatar-overlay {
+  opacity: 1;
+  cursor: pointer;
+}
+
+.avatar-overlay > * {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.avatar-overlay > span {
+  font-size: 14px;
+  font-weight: 600;
+  margin-left: 4px;
+}

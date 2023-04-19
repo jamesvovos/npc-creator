@@ -41,6 +41,10 @@ module.exports = () => {
         source: "/npcs/:id",
         destination: "http://127.0.0.1:8000/npcs/:id/",
       },
+      {
+        source: "/npcs/:id/avatar",
+        destination: "http://127.0.0.1:8000/npcs/:id/avatar/",
+      },
     ];
   };
   return {
