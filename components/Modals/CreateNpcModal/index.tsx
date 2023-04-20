@@ -86,8 +86,8 @@ export default function CreateNPCModal(): JSX.Element {
             rules={[{ required: true, message: "select a voice for your NPC" }]}
           >
             <Select placeholder="select a voice">
-              <Option value="IBM Watson">IBM Watson</Option>
-              <Option value="MS Azure">MS Azure</Option>
+              <Option value="en-US-JennyNeural">Jenny</Option>
+              <Option value="en-US-GuyNeural">Guy</Option>
             </Select>
           </Form.Item>
 
@@ -97,8 +97,11 @@ export default function CreateNPCModal(): JSX.Element {
             rules={[{ required: true, message: "select a style for your NPC" }]}
           >
             <Select placeholder="select a style">
-              <Option value="Happy">Happy</Option>
-              <Option value="Angry">Angry</Option>
+              <Option value="cheerful">cheerful</Option>
+              <Option value="angry">angry</Option>
+              <Option value="whispering">whispering</Option>
+              <Option value="terrified">terrified</Option>
+              <Option value="sad">sad</Option>
             </Select>
           </Form.Item>
         </Form>
