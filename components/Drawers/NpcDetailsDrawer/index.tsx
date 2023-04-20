@@ -12,7 +12,7 @@ import {
   message,
 } from "antd";
 import type { DrawerProps } from "antd/es/drawer";
-import { EditOutlined } from "@ant-design/icons";
+import { EditOutlined, SoundOutlined } from "@ant-design/icons";
 import { NPCDetailsDrawerProps, Intent, NPC } from "@/interfaces";
 import axios from "axios";
 import CreateAvatarModal from "@/components/Modals/CreateAvatarModal";
@@ -40,6 +40,18 @@ const NpcDetailsDrawer: React.FC<NPCDetailsDrawerProps> = ({
     style: "",
     intents: [],
   });
+
+  const previewVoice = async (npc: NPC) => {
+    const text = encodeURIComponent(
+      "Hey there! this is a preview of my voice and tone."
+    );
+    const url = `http://localhost:8000/chat/voice?voice_name=${npc.voice}&text=${text}&style=${npc.style}`;
+    try {
+      await axios.post(url);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const handleMouseEnter = () => {
     setHover(true);
@@ -201,6 +213,13 @@ const NpcDetailsDrawer: React.FC<NPCDetailsDrawerProps> = ({
               .join(", ")}
           </Descriptions.Item>
         </Descriptions>
+        <Button
+          type="primary"
+          onClick={() => previewVoice(npc)}
+          style={{ marginTop: 20 }}
+        >
+          Preview Voice <SoundOutlined key="playsound" />
+        </Button>
       </Drawer>
       <Modal
         title={`Editing ${npc.name} NPC`}
@@ -248,8 +267,8 @@ const NpcDetailsDrawer: React.FC<NPCDetailsDrawerProps> = ({
             rules={[{ required: true, message: "select a voice for your NPC" }]}
           >
             <Select placeholder="select a voice" defaultValue={modalData.voice}>
-              <Option value="IBM Watson">IBM Watson</Option>
-              <Option value="MS Azure">MS Azure</Option>
+              <Option value="en-US-JennyNeural">Jenny</Option>
+              <Option value="en-US-GuyNeural">Guy</Option>
             </Select>
           </Form.Item>
 
@@ -260,8 +279,11 @@ const NpcDetailsDrawer: React.FC<NPCDetailsDrawerProps> = ({
             rules={[{ required: true, message: "select a style for your NPC" }]}
           >
             <Select placeholder="select a style" defaultValue={modalData.style}>
-              <Option value="Happy">Happy</Option>
-              <Option value="Angry">Angry</Option>
+              <Option value="cheerful">cheerful</Option>
+              <Option value="angry">angry</Option>
+              <Option value="whispering">whispering</Option>
+              <Option value="terrified">terrified</Option>
+              <Option value="sad">sad</Option>
             </Select>
           </Form.Item>
           <Form.Item
